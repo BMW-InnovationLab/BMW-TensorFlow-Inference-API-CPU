@@ -151,9 +151,9 @@ Inside each subfolder there should be a:
   ```json
     {
         "inference_engine_name": "tensorflow_detection",
-        "confidence": <between_0_and_100>,
-        "predictions": <positive_number>,
-        "number_of_classes": <number_of_classes>,
+        "confidence": 60,
+        "predictions": 15,
+        "number_of_classes": 2,
         "framework": "tensorflow",
         "type": "detection",
         "network": "inception"
