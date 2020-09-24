@@ -72,7 +72,7 @@ As mentioned before, this container can be deployed using either **docker** or *
 
 If you wish to deploy this API using **docker**, please issue the following run command.
 
-If you wish to deploy this API using **docker swarm**, please refer to following link [docker swarm documentation](https://github.com/BMW-InnovationLab/BMW-TensorFlow-Inference-API-GPU/blob/dev-swarm/README-docker_swarm.md). After deploying the API with docker swarm, please consider returning to this documentation for further information about the API endpoints as well as the model structure sections.
+If you wish to deploy this API using **docker swarm**, please refer to following link [docker swarm documentation](./README-docker_swarm.md). After deploying the API with docker swarm, please consider returning to this documentation for further information about the API endpoints as well as the model structure sections.
 
 To run the API, go the to the API's directory and run the following:
 
