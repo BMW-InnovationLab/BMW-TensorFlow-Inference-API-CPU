@@ -247,6 +247,7 @@ Inside each subfolder there should be a:
         </tr>
     </tbody>
 </table>
+
 ## Acknowledgment
 
 [inmind.ai](https://inmind.ai)
