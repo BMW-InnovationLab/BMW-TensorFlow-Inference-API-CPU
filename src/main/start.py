@@ -6,12 +6,17 @@ from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 from deep_learning_service import DeepLearningService
-from fastapi import FastAPI, Form, File, UploadFile, Header
+from fastapi import FastAPI, Form, File, UploadFile, Header, HTTPException
 from inference.exceptions import ModelNotFound, InvalidModelConfiguration, ApplicationError, ModelNotLoaded, \
-	InferenceEngineNotFound, InvalidInputData
-
+    InferenceEngineNotFound, InvalidInputData
+from ocr import ocr_service, one_shot_ocr_service
+from datetime import datetime
+import pytz
+from PIL import Image
 
 sys.path.append('./inference')
+
+tz = pytz.timezone("Europe/Berlin")
 
 dl_service = DeepLearningService()
 error_logging = Error()
@@ -185,3 +190,78 @@ async def list_model_config(model_name: str):
 	"""
 	config = dl_service.get_config(model_name)
 	return ApiResponse(data=config)
+
+
+@app.post('/models/{model_name}/one_shot_ocr')
+async def one_shot_ocr(
+    model_name: str,
+    image: UploadFile = File(
+        ..., description="Image to perform optical character recognition based on layout inference:")
+):
+    """
+        Takes an image and returns extracted text details.
+
+        In first place a detection model will be used for cropping interesting areas in the uploaded image. These areas will then be passed to the OCR-Service for text extraction.
+
+        :param model_name: Model name or model hash for layout detection
+
+        :param image: Image file
+
+        :return: Text fields with the detected files inside
+
+    """
+    output = None
+    # call detection on image with choosen model
+    try:
+        output = await run_model(model_name, image)
+    except:
+        raise HTTPException(status_code=404, detail='Invalid Model')
+
+    # run ocr_service
+    response = None
+    try:
+        image = Image.open(image.file).convert('RGB')
+        response = one_shot_ocr_service(image, output.data)
+    except:
+        raise HTTPException(
+            status_code=500, detail='Unexpected Error during Inference (Determination of Texts)')
+
+    if not response:
+        raise HTTPException(
+            status_code=400, detail='Inference (Determination of Texts) is not Possible with the Specified Model')
+
+    return response
+
+
+@app.post('/models/{model_name}/ocr')
+async def optical_character_recognition(
+    model_name: str,
+    image: UploadFile = File(
+        ..., description="Image to perform optical character recognition based on layout inference:"),
+):
+    """
+        Takes an image and returns extracted text informations.
+
+        The image is passed to the OCR-Service for text extraction
+
+        :param model: Model name or model hash
+
+        :param image: Image file
+
+        :return: Text fields with the detected files inside
+
+    """
+    # run ocr_service
+    response = None
+    try:
+        image = Image.open(image.file).convert('RGB')
+        response = ocr_service(image)
+    except:
+        raise HTTPException(
+            status_code=500, detail='Unexpected Error during Inference (Determination of Texts)')
+
+    if not response:
+        raise HTTPException(
+            status_code=400, detail='Inference (Determination of Texts) is not Possible with the Specified Model')
+
+    return response
