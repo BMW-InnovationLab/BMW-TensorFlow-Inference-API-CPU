@@ -164,7 +164,7 @@ Takes an image and returns extracted text details. In first place a detection mo
 
 Takes an image and returns extracted text details without using an object detection model
 
-**P.S: Custom endpoints like /load, /detect, /get_labels and /one_shot_ocr should be used in a chronological order. First you have to call /load, and then call /detect, /get_labels or /one_shot_ocr
+**P.S:** Custom endpoints like /load, /detect, /get_labels and /one_shot_ocr should be used in a chronological order. First you have to call /load, and then call /detect, /get_labels or /one_shot_ocr
 ## Model structure
 
 The folder "models" contains subfolders of all the models to be loaded.
