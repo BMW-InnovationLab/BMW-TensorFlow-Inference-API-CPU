@@ -16,8 +16,8 @@ socketIO-client-nexus
 tensorflow==1.13.1
 uvicorn
 jsonschema
-
-
+pytz
+pytesseract
 
 
 
