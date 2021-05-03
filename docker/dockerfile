@@ -5,6 +5,8 @@ LABEL maintainer="antoine.charbel@inmind.ai"
 COPY docker/requirements.txt .
 COPY src/main /main
 
+RUN apt-get update && apt-get install -y tesseract-ocr
+
 RUN pip install -r requirements.txt
 
 WORKDIR /main
